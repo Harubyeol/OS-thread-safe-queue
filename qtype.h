@@ -1,9 +1,18 @@
 #ifndef _QTYPE_H  // header guard
 #define _QTYPE_H
 
-// ==========ÀÌ ÆÄÀÏÀº ¼öÁ¤ °¡´É==========
+#include <atomic>
+#include <mutex>
 
-typedef unsigned int Key;  // °ªÀÌ Å¬¼ö·Ï ³ôÀº ¿ì¼±¼øÀ§
+typedef unsigned int Key;
+
+typedef struct {
+    char* data;  // ì‹¤ì œ ë°ì´í„°ì— ëŒ€í•œ í¬ì¸í„° (1B~1KB)
+    unsigned int length;  // ë°ì´í„° ê¸¸ì´ (ìµœëŒ€ 1024)
+} Value;
+// ==========ì´ íŒŒì¼ì€ ìˆ˜ì • ê°€ëŠ¥==========
+
+typedef unsigned int Key;  // ê°’ì´ í´ìˆ˜ë¡ ë†’ì€ ìš°ì„ ìˆœìœ„
 typedef void* Value;
 
 typedef struct {
@@ -12,22 +21,24 @@ typedef struct {
 } Item;
 
 typedef struct {
-    bool success;   // true: ¼º°ø, false: ½ÇÆĞ
+    bool success;   // true: ì„±ê³µ, false: ì‹¤íŒ¨
     Item item;
-    // ÇÊµå Ãß°¡ °¡´É
+    // í•„ë“œ ì¶”ê°€ ê°€ëŠ¥
 } Reply;
 
 typedef struct node_t {
     Item item;
     struct node_t* next;
-    // ÇÊµå Ãß°¡ °¡´É
+    // í•„ë“œ ì¶”ê°€ ê°€ëŠ¥
 } Node;
 
 typedef struct {
-    Node* head, tail;
-    // ÇÊµå Ãß°¡ °¡´É
+    Node* head
+    Node* tail;
+    // í•„ë“œ ì¶”ê°€ ê°€ëŠ¥
+    std::mutex lock; // í ì „ì²´ì— ëŒ€í•œ ë½
 } Queue;
 
-// ÀÌÈÄ ÀÚÀ¯·Ó°Ô Ãß°¡/¼öÁ¤: »õ·Î¿î ÀÚ·áÇü Á¤ÀÇ µî
+// ì´í›„ ììœ ë¡­ê²Œ ì¶”ê°€/ìˆ˜ì •: ìƒˆë¡œìš´ ìë£Œí˜• ì •ì˜ ë“±
 
 #endif
