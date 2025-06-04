@@ -1,20 +1,38 @@
 #include <iostream>
 #include "queue.h"
+#include <cstring>
 
-
+// í ì´ˆê¸°í™”
 Queue* init(void) {
-	return NULL;
+    Queue* queue = new Queue;
+    queue->head = nullptr;
+    queue->tail = nullptr;
+    return queue;
 }
 
 
+// í í•´ì œ
 void release(Queue* queue) {
-	return;
+    Node* curr = queue->head;
+    while (curr) {
+        Node* next = curr->next;
+        nfree(curr);
+        curr = next;
+    }
+    delete queue;
 }
 
-
+// ë…¸ë“œ ìƒì„±
 Node* nalloc(Item item) {
-	// Node »ý¼º, itemÀ¸·Î ÃÊ±âÈ­
-	return NULL;
+    Node* node = new Node;
+    node->item.key = item.key;
+    node->item.value.length = item.value.length;
+
+    node->item.value.data = new char[item.value.length];
+    std::memcpy(node->item.value.data, item.value.data, item.value.length);
+
+    node->next = nullptr;
+    return node;
 }
 
 
