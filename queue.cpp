@@ -35,14 +35,15 @@ Node* nalloc(Item item) {
     return node;
 }
 
-
+// 노드 해제
 void nfree(Node* node) {
-	return;
+    delete[] node->item.value.data;
+    delete node;
 }
 
-
+// 노드 복제
 Node* nclone(Node* node) {
-	return NULL;
+    return nalloc(node->item);
 }
 
 
