@@ -47,9 +47,13 @@ Node* nclone(Node* node) {
 }
 
 
+// 우선순위 삽입 (key 기준 오름차순)
 Reply enqueue(Queue* queue, Item item) {
-	Reply reply = { false, NULL };
-	return reply;
+    Reply reply;
+    reply.success = true;
+
+    Node* new_node = nalloc(item);
+    std::lock_guard<std::mutex> guard(queue->lock);
 }
 
 Reply dequeue(Queue* queue) {
