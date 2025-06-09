@@ -54,13 +54,51 @@ Reply enqueue(Queue* queue, Item item) {
 
     Node* new_node = nalloc(item);
     std::lock_guard<std::mutex> guard(queue->lock);
+
+    if (!queue->head || item.key < queue->head->item.key) {
+        new_node->next = queue->head;
+        queue->head = new_node;
+        if (!queue->tail) queue->tail = new_node;
+        reply.item = new_node->item;
+        return reply;
+    }
+
+    Node* curr = queue->head;
+    while (curr->next && curr->next->item.key <= item.key) {
+        curr = curr->next;
+    }
+
+    new_node->next = curr->next;
+    curr->next = new_node;
+    if (!new_node->next) queue->tail = new_node;
+
+    reply.item = new_node->item;
+    return reply;
+	
 }
 
+// 우선순위 제거 (가장 앞 노드)
 Reply dequeue(Queue* queue) {
 	Reply reply = { false, NULL };
-	return reply;
+	std::lock_guard<std::mutex> guard(queue->lock);
+	if (!queue->head) {
+	    reply.success = false;
+    	    return reply;
+}
+	
+    Node* removed = queue->head;
+    queue->head = removed->next;
+    if (!queue->head) queue->tail = nullptr;
+
+    reply.success = true;
+    reply.item = removed->item;
+
+    removed->item.value.data = nullptr;
+    nfree(removed);
+    return reply;
 }
 
 Queue* range(Queue* queue, Key start, Key end) {
 	return NULL;
 }
+
