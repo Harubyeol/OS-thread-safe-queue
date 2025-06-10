@@ -98,7 +98,20 @@ Reply dequeue(Queue* queue) {
     return reply;
 }
 
+// key 범위 복사
 Queue* range(Queue* queue, Key start, Key end) {
-	return NULL;
+    Queue* new_queue = init();
+
+    std::lock_guard<std::mutex> guard(queue->lock);
+    Node* curr = queue->head;
+
+    while (curr) {
+        if (curr->item.key >= start && curr->item.key <= end) {
+            enqueue(new_queue, curr->item);
+        }
+        curr = curr->next;
+    }
+
+    return new_queue;
 }
 
